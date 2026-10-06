@@ -24,10 +24,10 @@ jobs:
             - name: Install Playwright Browsers
               run: npx playwright install --with-deps
             - name: Run Playwright tests
-              run: npx playwright test --shard ${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
+              run: npx playwright test --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }} --reporter=blob
             - name: Upload Playwright Test Results
-              if: ${{!cancelled()}}
-              uses: actions/upload-artifact@v3
+              if: ${{ !cancelled() }}
+              uses: actions/upload-artifact@v4
               with:
                   name: blob-report-${{ matrix.shardIndex }}
                   path: blob-report
@@ -44,18 +44,18 @@ jobs:
                   node-version: 'lts/*'
             - name: Install dependencies
               run: npm ci
-            - name: Dowload the blob reports
+            - name: Download the blob reports
               uses: actions/download-artifact@v4
               with:
-                  name: all-blob-reports
-                  path: blob-report-*
+                  pattern: blob-report-*
+                  path: all-blob-reports
                   merge-multiple: true
             - name: Merge blob reports
-              run: npx playwright merge-report --reporter html ./all-blob-reports
+              run: npx playwright merge-reports --reporter=html ./all-blob-reports
             - name: Upload the merged HTML report
               uses: actions/upload-artifact@v4
               with:
                   name: html-report--attempt-${{ github.run_attempt }}
-                  path: all-blob-reports
+                  path: playwright-report
                   retention-days: 14
            
