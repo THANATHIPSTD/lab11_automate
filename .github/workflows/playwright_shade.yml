@@ -1,8 +1,8 @@
 name: Playwright Tests (shared)
 on:
     push:
-        branches:
-            - main
+        branches: [ main, master ]
+
     # workflow_dispatch:
     #     schedule:
     #         - cron: '0 2 * * *'
